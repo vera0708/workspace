@@ -1,0 +1,29 @@
+.footer {
+    padding: 40px 0;
+}
+
+.footer__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer__copyright {
+    padding-top: 27px;
+}
+
+.footer__contact {
+    padding-bottom: 8px;
+}
+
+.footer__contact:last-child {
+    padding-bottom: 0;
+}
+
+.footer__contact:first-child {
+    padding-top: 48px;
+}
+
+.footer__link:hover {
+    color: #2A18FF;
+}

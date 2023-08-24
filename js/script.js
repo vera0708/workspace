@@ -2,6 +2,10 @@ const API_URL = "https://workspace-methed.vercel.app/";
 const LOCATION_URL = "api/locations";
 const VACANCY_URL = "api/vacancy";
 
+const cardsList = document.querySelector('.cards__list');
+let lastURL = '';
+const pagination = {};
+
 const getData = async (url, cbSuccess, cbError) => {
     try {
         const response = await fetch(url);
@@ -34,11 +38,36 @@ const createCards = (data) =>
         return li;
     });
 
-const renderVacancy = (data, cardsList) => {
+const renderVacancies = (data) => {
     cardsList.textContent = '';
     const cards = createCards(data);
     cardsList.append(...cards);
-}
+    if (data.pagination) {
+        Object.assign(pagination, data.pagination);
+    };
+    observer.observe(cardsList.lastElementChild);
+};
+
+const renderMoreVacancies = (data) => {
+    const cards = createCards(data);
+    cardsList.append(...cards);
+    if (data.pagination) {
+        Object.assign(pagination, data.pagination);
+    };
+    observer.observe(cardsList.lastElementChild);
+};
+
+const loadMoreVacancies = () => {
+    if (pagination.totalPages > pagination.currentPage) {
+        const urlWithParam = new URL(lastURL);
+        urlWithParam.searchParams.set('page', pagination.currentPage + 1);
+        urlWithParam.searchParams.set('limit', window.innerWidth < 768 ? 6 : 12)
+
+        getData(urlWithParam, renderMoreVacancies, renderError).then(() => {
+            lastURL = urlWithParam;
+        });
+    }
+};
 
 const renderError = (err) => {
     console.warn(err);
@@ -68,7 +97,7 @@ const createDetailVacancy = ({
         <a class="blue-text" href="mailto:${email}">${email}</a>
     </p>
 </article>
-`
+`;
 
 const renderModal = (data) => {
     const modal = document.createElement('div');
@@ -88,15 +117,34 @@ const renderModal = (data) => {
     modalMain.append(modalClose);
     modal.append(modalMain);
     document.body.append(modal);
-}
+
+    modal.addEventListener('click', ({ target }) => {
+        if (target === modal || target.closest('.modal__close')) {
+            modal.remove();
+        }
+    });
+};
 
 const openModal = (id) => {
     getData(`${API_URL}${VACANCY_URL}/${id}`,
         renderModal,
         renderError);
+};
+
+const observer = new IntersectionObserver(
+    (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                loadMoreVacancies();
+            }
+        });
+    }, {
+    rootMargin: '100px',
 }
+);
 
 const init = () => {
+    const filterForm = document.querySelector('.filter__form');
     const cardsList = document.querySelector('.cards__list');
     // select city
     const citySelect = document.querySelector('#city');
@@ -122,24 +170,42 @@ const init = () => {
             console.log('err', err);
         },
     );
+
     // cards
-    const url = new URL(`${API_URL}${VACANCY_URL}`);
+    const urlWithParam = new URL(`${API_URL}${VACANCY_URL}`);
 
-    getData(url,
-        (data) => {
-            renderVacancy(data, cardsList)
-        },
-        renderError
-    );
+    urlWithParam.searchParams.set('limit', window.innerWidth < 768 ? 6 : 12);
+    urlWithParam.searchParams.set('page', 1);
 
+    getData(urlWithParam, renderVacancies, renderError).then(() => {
+        lastURL = urlWithParam;
+    });
+
+    // modal
     cardsList.addEventListener('click', ({ target }) => {
         const vacancyCard = target.closest('.vacancy');
-        console.log('vacancyCard', vacancyCard);
         if (vacancyCard) {
             const vacancyId = vacancyCard.dataset.id;
             openModal(vacancyId);
         }
-    })
+    });
+
+    // filter
+
+    filterForm.addEventListener('submit', (eve) => {
+        eve.preventDefault();
+        const formData = new FormData(filterForm);
+
+        const urlWithParam = new URL(`${API_URL}${VACANCY_URL}`);
+
+        formData.forEach((value, key) => {
+            urlWithParam.searchParams.append(key, value)
+        });
+
+        getData(urlWithParam, renderVacancies, renderError).then(() => {
+            lastURL = urlWithParam;
+        });
+    });
 };
 
 init();

@@ -31,3 +31,9 @@
 .modal__close :focus-visible {
     outline-color: blueviolet;
 }
+
+@media (max-width: 660px) {
+    .modal {
+        padding: 30px 15px;
+    }
+}

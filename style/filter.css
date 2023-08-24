@@ -65,11 +65,40 @@
     gap: 32px;
 }
 
-/* .filter__buttons {} */
-
 .filter__button {
     color: #171717;
     padding: 8px 24px;
     border-radius: 4px;
     background-color: #A6ADFF;
 }
+
+@media (max-width: 940px) {
+    .filter__title {
+        position: fixed;
+        transform: scale(0);
+    }
+
+    .filter__input {
+        max-width: 140px;
+    }
+
+    .filter__checkboxes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 24px;
+        justify-content: space-between;
+    }
+
+    .filter__buttons {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .filter__reset {
+        position: static;
+
+    }
+}
+
+@media (max-width: 660px) {}

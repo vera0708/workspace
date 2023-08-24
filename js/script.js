@@ -7,7 +7,7 @@ const cardsList = document.querySelector('.cards__list');
 const getData = async (url, cbSuccess, cbError) => {
     try {
         const response = await fetch(url);
-        const data = await response.json(); s
+        const data = await response.json();
         cbSuccess(data);
     } catch (err) {
         cbError(err)

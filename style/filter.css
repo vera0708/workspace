@@ -12,7 +12,7 @@
 .filter__title {
     font-size: 20px;
     font-weight: 400;
-    margin-bottom: 3px;
+    margin-bottom: 32px;
 }
 
 .filter__form {
@@ -70,6 +70,19 @@
     padding: 8px 24px;
     border-radius: 4px;
     background-color: #A6ADFF;
+    border: 2px solid transparent;
+    transition-property: color, background-color;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.filter__button:focus-visible {
+    border-color: #4f58be;
+}
+
+.filter__button:hover {
+    color: #fff;
+    background-color: #2a18ff;
 }
 
 @media (max-width: 940px) {
@@ -85,8 +98,7 @@
     .filter__checkboxes {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 24px;
-        justify-content: space-between;
+        gap: 24px 70px;
     }
 
     .filter__buttons {

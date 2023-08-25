@@ -14,6 +14,16 @@
     padding: 12px 32px;
     border-radius: 8px;
     background-color: #A6ADFF;
+    border: 2px solid transparent;
+}
+
+.header__link:focus-visible {
+    border-color: #4f58be;
+}
+
+.header__link:hover {
+    color: #fff;
+    background-color: #2a18ff;
 }
 
 @media (max-width: 1140px) {
@@ -29,7 +39,7 @@
 
     .header__link {
         font-size: 14px;
-        padding: 10px 16px;
+        padding: 10px 24px;
         border-radius: 6px;
     }
 }
